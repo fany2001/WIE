@@ -1,10 +1,6 @@
 <template>
   <div class="main">
-    <v-stage 
-    ref="stage" 
-    :config="stageSize"
-    @mousedown="handleStageMouseDown"
-    @touchstart="handleStageMouseDown">
+    <v-stage ref="stage" :config="stageSize" @mousedown="handleStageMouseDown" @touchstart="handleStageMouseDown">
       <v-layer :config="{
         width: 960,
         height: 540
@@ -18,7 +14,7 @@
           fill: 'rgb(216,216,216)'
         }"></v-text>
         <v-image :config="imageConfig" @transformend="handleTransformEnd"></v-image>
-        <v-transformer ref="transformer" />
+        <!-- <v-transformer ref="transformer" /> -->
       </v-layer>
     </v-stage>
   </div>
@@ -43,7 +39,7 @@ let empty = ref(true);
 let selectedShapeName = ref('');
 // 声明响应式图片对象
 const image = reactive(new window.Image());
-const imageConfig:ImageConfig = reactive({
+const imageConfig: ImageConfig = reactive({
   image: image, //image属性接受的是image对象，而不是图片source
   draggable: true //图片可拖拽属性
 })
@@ -52,7 +48,7 @@ const stage = ref(null)
 const transformer = ref(null)
 /**
  *  @function imageLoad
- *  打开上传图片
+ *  打开上传图片,将图片在框内显示
  */
 const imageLoad = (e: any) => {
   if (e.target) { //确保event不为null
@@ -61,11 +57,10 @@ const imageLoad = (e: any) => {
     reader.readAsDataURL(file);
     reader.onload = function (e) {
       image.src = <string>e.target?.result
-      if (image.width > 850) {
+      if (image.width > 850 || image.width <= 0) {
         image.height = (850 / image.width) * image.height;
         image.width = 850;
       }
-
       empty.value = !empty;
     }
   }
